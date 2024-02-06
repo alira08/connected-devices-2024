@@ -6,6 +6,7 @@
 .large{
     font-size:300%;
 }
+
 #important{
     font-family: 'Comic Sans MS';
     text-align: center;
@@ -15,3 +16,15 @@
 #important > h2{
 color: blue; 
 }
+
+span {
+    background-color: red;
+  }
+  
+  strong {
+    color: rebeccapurple;
+  }
+  
+  em {
+    color: rebeccapurple;
+  }

@@ -3,40 +3,44 @@
 
 <html>
 <head>
-    <title>Title here</title>
+    <title>It's game time baby</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="important">
-<h1>title</h1>
-<h2> subtitle</h2>
-<h3>the subbiest title</h3>
-    </div>
-        <button onmousedown="handleClick(event)" id="myButton" onmouseup="unHandleClick()">Click me!</button>
+    <!-- <div id="important"> -->
+        <h1>Let's play a little game!</h1>
+        <p>Each of the buttons below will <span>change color</span> if you click on them.</p>
         
+        <p>If all three buttons match, then <strong>you win!</strong></p>
+        
+        <p><em>Please note:</em> The colors are completely random, so it might take a while to get this tbh lol. Click the RESET button below to bring them all back to neutral.</p>
+    <!-- </div> -->
+       <!-- <button onmousedown="handleClick(event)" id="myButton" onmouseup="unHandleClick()">Click me!</button>
+         -->
     <!-- <img src="https://wybeaconnews.org/wp-content/uploads/2020/10/BUff-Dolphin-475x354.jpg"</img> -->
+
+    <button onclick="handleClick('button1')" id="button1">Change color - button 1</button>
+    <button onclick="handleClick('button2')" id="button2">Change color - button 2</button>
+    <button onclick="handleClick('button3')" id="button3">Change color - button 3</button>
+
+    <p></p>
 <script>
-// let myButton = document.getElementById("myButton").addEventListener('click',)
 
-// myButton.innerHTML = "my text";
+function getRandomColor() {
+            const predefinedColors = [0, 127, 255];
+            const randomIndex = Math.floor(Math.random() * predefinedColors.length);
+            return predefinedColors[randomIndex];
+        }
 
-function handleClick(e){
-    document.getElementById('title')
-}
-function unHandleClick(){
-    document.getElementById('myButton').style.backgroundColor="red";
-}
-//let myButton = document.querySelector('#important > h2')
+        function handleClick(buttonId) {
+            const btn = document.getElementById(buttonId);
+            const rndRed = getRandomColor();
+            const rndGreen = getRandomColor();
+            const rndBlue = getRandomColor();
+            const rndCol = `rgb(${rndRed}, ${rndGreen}, ${rndBlue})`;
+            btn.style.backgroundColor = rndCol;
+        }
 
 </script>
 </body>
-
-
 </html>
-
-        <!-- <h1>DO IT YOU WONT</h1>
-        <h1 id="red_title">hi!</h1>
-        <h1 id="important">wuz poppin'</h1>
-        <h2 id="important">c'mon now...</h2>
-        <h3><b>please?</b> uWu</h3>
-    <h1>:) :) :) :) :)</h1> -->
