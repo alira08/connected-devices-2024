@@ -1,0 +1,17 @@
+
+#red_title{
+    font-size:300%;
+    color:red;
+}
+.large{
+    font-size:300%;
+}
+#important{
+    font-family: 'Comic Sans MS';
+    text-align: center;
+    font-style: italic;
+}
+
+#important > h2{
+color: blue; 
+}
