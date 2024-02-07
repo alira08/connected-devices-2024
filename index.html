@@ -7,26 +7,36 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- <div id="important"> -->
-        <h1>Let's play a little game!</h1>
-        <p>Each of the buttons below will <span>change color</span> if you click on them.</p>
-        
-        <p>If all three buttons match, then <strong>you win!</strong></p>
-        
-        <p><em>Please note:</em> The colors are completely random, so it might take a while to get this tbh lol. Click the RESET button below to bring them all back to neutral.</p>
-    <!-- </div> -->
-       <!-- <button onmousedown="handleClick(event)" id="myButton" onmouseup="unHandleClick()">Click me!</button>
-         -->
-    <!-- <img src="https://wybeaconnews.org/wp-content/uploads/2020/10/BUff-Dolphin-475x354.jpg"</img> -->
+    <h1>Let's play a little game!</h1>
+    <p>Each of the buttons below will <span>change color</span> if you click on them.</p>
+    
+    <p>If all three buttons match, then <strong>you win!</strong></p>
+    
+    <p><em>Please note:</em> The colors are completely random, so it might take a while to get this tbh lol. Hover over the red square to make sure that two checkboxes are <i>actually</i> the same color.</p>
 
-    <button onclick="handleClick('button1')" id="button1">Change color - button 1</button>
-    <button onclick="handleClick('button2')" id="button2">Change color - button 2</button>
-    <button onclick="handleClick('button3')" id="button3">Change color - button 3</button>
+    <div class="checkbox-container">
+        <button onmouseover="allowColorChange('rgb1')" onclick="handleClick('button1')" id="button1">Change color 1</button>
+        <label class="checkbox-label">RGB: <span id="rgb1" class="display-on-hover"></span></label>
+    </div>
 
-    <p></p>
-<script>
+    <div class="checkbox-container">
+        <button onmouseover="allowColorChange('rgb2')" onclick="handleClick('button2')" id="button2">Change color 2</button>
+        <label class="checkbox-label">RGB: <span id="rgb2" class="display-on-hover"></span></label>
+    </div>
 
-function getRandomColor() {
+    <div class="checkbox-container">
+        <button onmouseover="allowColorChange('rgb3')" onclick="handleClick('button3')" id="button3">Change color 3</button>
+        <label class="checkbox-label">RGB: <span id="rgb3" class="display-on-hover"></span></label>
+    </div>
+
+    <div id="winMessage">
+        <p>You win!</p>
+    </div>
+
+    <div id="colorDisplay"></div>
+
+    <script>
+        function getRandomColor() {
             const predefinedColors = [0, 127, 255];
             const randomIndex = Math.floor(Math.random() * predefinedColors.length);
             return predefinedColors[randomIndex];
@@ -39,8 +49,51 @@ function getRandomColor() {
             const rndBlue = getRandomColor();
             const rndCol = `rgb(${rndRed}, ${rndGreen}, ${rndBlue})`;
             btn.style.backgroundColor = rndCol;
+            checkWin();
         }
 
-</script>
+        function checkWin() {
+            const btn1 = document.getElementById('button1');
+            const btn2 = document.getElementById('button2');
+            const btn3 = document.getElementById('button3');
+
+            const col1 = getComputedStyle(btn1).backgroundColor;
+            const col2 = getComputedStyle(btn2).backgroundColor;
+            const col3 = getComputedStyle(btn3).backgroundColor;
+
+            if (col1 === col2 && col2 === col3) {
+                document.getElementById('winMessage').style.display = 'flex';
+            } else {
+                document.getElementById('winMessage').style.display = 'none';
+            }
+        }
+
+        const colorDisplay = document.getElementById('colorDisplay');
+        const btn1 = document.getElementById('button1');
+        const btn2 = document.getElementById('button2');
+        const btn3 = document.getElementById('button3');
+
+        function allowColorChange(rgbId) {
+            const rgbSpan = document.getElementById(rgbId);
+            rgbSpan.classList.add('display-on-hover');
+        }
+
+        document.addEventListener('mousemove', (event) => {
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+
+            const rect = colorDisplay.getBoundingClientRect();
+
+            if (mouseX >= rect.left && mouseX <= rect.right && mouseY >= rect.top && mouseY <= rect.bottom) {
+                document.getElementById('rgb1').classList.add('display-on-hover');
+                document.getElementById('rgb2').classList.add('display-on-hover');
+                document.getElementById('rgb3').classList.add('display-on-hover');
+            } else {
+                document.getElementById('rgb1').classList.remove('display-on-hover');
+                document.getElementById('rgb2').classList.remove('display-on-hover');
+                document.getElementById('rgb3').classList.remove('display-on-hover');
+            }
+        });
+    </script>
 </body>
 </html>
