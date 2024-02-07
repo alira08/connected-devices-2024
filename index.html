@@ -1,10 +1,7 @@
-
-<!DOCTYPE html>
-
 <html>
 <head>
     <title>It's game time baby</title>
-<link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Let's play a little game!</h1>
@@ -12,30 +9,51 @@
     
     <p>If all three buttons match, then <strong>you win!</strong></p>
     
-    <p><em>Please note:</em> The colors are completely random, so it might take a while to get this tbh lol. Hover over the red square to make sure that two checkboxes are <i>actually</i> the same color.</p>
+    <p><em>Please note:</em> The colors are completely random, so it might take a while to get this tbh lol. Enter your name to be added to the high score list! <hidden> Want to cheat? Type 'HACKERMAN' in the input field to instantly win.
+    </hidden></p>
+
+    <label for="nameInput">Your Name:</label>
+    <input type="text" id="nameInput" placeholder="Enter your name">
+
+    <div class="counter-container">
+        <p>Total Clicks: <span id="totalClicks">0</span></p>
+        <button onclick="resetGame()">Reset Game</button>
+    </div>
 
     <div class="checkbox-container">
-        <button onmouseover="allowColorChange('rgb1')" onclick="handleClick('button1')" id="button1">Change color 1</button>
+        <button onclick="handleClick('button1')" id="button1">Change color 1</button>
         <label class="checkbox-label">RGB: <span id="rgb1" class="display-on-hover"></span></label>
     </div>
 
     <div class="checkbox-container">
-        <button onmouseover="allowColorChange('rgb2')" onclick="handleClick('button2')" id="button2">Change color 2</button>
+        <button onclick="handleClick('button2')" id="button2">Change color 2</button>
         <label class="checkbox-label">RGB: <span id="rgb2" class="display-on-hover"></span></label>
     </div>
 
     <div class="checkbox-container">
-        <button onmouseover="allowColorChange('rgb3')" onclick="handleClick('button3')" id="button3">Change color 3</button>
+        <button onclick="handleClick('button3')" id="button3">Change color 3</button>
         <label class="checkbox-label">RGB: <span id="rgb3" class="display-on-hover"></span></label>
     </div>
 
-    <div id="winMessage">
-        <p>You win!</p>
+    <div id="winMessage" style="display: none;">
+        <p id="winText">You win! You got the right combo in <span id="winClicks">0</span> clicks.</p>
+        <p id="clickCountText"></p>
+        <p id="highScoreText"></p>
+        <button onclick="tryAgain()">Try again?</button>
     </div>
 
-    <div id="colorDisplay"></div>
+    <div id="tempMessage" style="color: red; position: fixed; top: 300px; right: 10px; display: none;"></div>
+
+    <div id="highScoreList">
+        <h2>High Score List</h2>
+        <ol id="scoreList"></ol>
+    </div>
 
     <script>
+        let totalClicks = 0;
+        let highScore = Infinity;
+        let playerName = '';
+
         function getRandomColor() {
             const predefinedColors = [0, 127, 255];
             const randomIndex = Math.floor(Math.random() * predefinedColors.length);
@@ -43,12 +61,29 @@
         }
 
         function handleClick(buttonId) {
+            totalClicks++;
+            updateTotalClicksDisplay();
+
+            if (totalClicks === 20) {
+                showTempMessage("You'll get there soon I bet... just a matter of time (and clicks!)");
+            } else if (totalClicks === 50) {
+                showTempMessage("Fingers getting tired yet?");
+            } else if (totalClicks === 100) {
+                showTempMessage("'Insanity is doing the same thing over and over again and expecting different results.' - Albert Einstein");
+            } else if (totalClicks === 150) {
+                showTempMessage("Wow you actually have the worst luck imaginable I'm so sorry...");
+            }
+
             const btn = document.getElementById(buttonId);
             const rndRed = getRandomColor();
             const rndGreen = getRandomColor();
             const rndBlue = getRandomColor();
             const rndCol = `rgb(${rndRed}, ${rndGreen}, ${rndBlue})`;
             btn.style.backgroundColor = rndCol;
+
+            const rgbSpan = document.getElementById(`rgb${buttonId.charAt(buttonId.length-1)}`);
+            rgbSpan.textContent = `${rndRed}, ${rndGreen}, ${rndBlue}`;
+
             checkWin();
         }
 
@@ -62,38 +97,107 @@
             const col3 = getComputedStyle(btn3).backgroundColor;
 
             if (col1 === col2 && col2 === col3) {
+                const winText = document.getElementById('winText');
+                const winClicks = document.getElementById('winClicks');
+                winClicks.textContent = totalClicks;
+                winText.textContent = `You win! You got the right combo in ${totalClicks} clicks.`;
+
+                const clickCountText = document.getElementById('clickCountText');
+                clickCountText.textContent = `Previous attempt: ${totalClicks} clicks.`;
+
+                if (totalClicks < highScore) {
+                    playerName = document.getElementById('nameInput').value || 'Anonymous';
+                    highScore = totalClicks;
+                    const highScoreText = document.getElementById('highScoreText');
+                    highScoreText.textContent = `New high score by ${playerName}: ${highScore} clicks.`;
+
+                    updateHighScoreList();
+                }
+
                 document.getElementById('winMessage').style.display = 'flex';
             } else {
                 document.getElementById('winMessage').style.display = 'none';
             }
         }
 
-        const colorDisplay = document.getElementById('colorDisplay');
-        const btn1 = document.getElementById('button1');
-        const btn2 = document.getElementById('button2');
-        const btn3 = document.getElementById('button3');
-
-        function allowColorChange(rgbId) {
-            const rgbSpan = document.getElementById(rgbId);
-            rgbSpan.classList.add('display-on-hover');
+        function updateTotalClicksDisplay() {
+            document.getElementById('totalClicks').textContent = totalClicks;
         }
 
-        document.addEventListener('mousemove', (event) => {
-            const mouseX = event.clientX;
-            const mouseY = event.clientY;
+        function tryAgain() {
+            totalClicks = 0;
+            playerName = '';
+            updateTotalClicksDisplay();
+            resetButtonColors();
+            document.getElementById('winMessage').style.display = 'none';
+            document.getElementById('nameInput').value = '';
+        }
 
-            const rect = colorDisplay.getBoundingClientRect();
+        function updateHighScoreList() {
+            const scoreList = document.getElementById('scoreList');
+            const newScoreItem = document.createElement('li');
+            newScoreItem.textContent = `${playerName}: ${highScore} clicks`;
+            scoreList.appendChild(newScoreItem);
+        }
 
-            if (mouseX >= rect.left && mouseX <= rect.right && mouseY >= rect.top && mouseY <= rect.bottom) {
-                document.getElementById('rgb1').classList.add('display-on-hover');
-                document.getElementById('rgb2').classList.add('display-on-hover');
-                document.getElementById('rgb3').classList.add('display-on-hover');
-            } else {
-                document.getElementById('rgb1').classList.remove('display-on-hover');
-                document.getElementById('rgb2').classList.remove('display-on-hover');
-                document.getElementById('rgb3').classList.remove('display-on-hover');
+        function showTempMessage(message) {
+            const tempMessage = document.getElementById('tempMessage');
+            tempMessage.textContent = message;
+            tempMessage.style.display = 'block';
+
+            setTimeout(() => {
+                tempMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function resetGame() {
+            totalClicks = 0;
+            updateTotalClicksDisplay();
+            resetButtonColors();
+            document.getElementById('winMessage').style.display = 'none';
+            document.getElementById('nameInput').value = '';
+        }
+
+        function resetButtonColors() {
+            const btn1 = document.getElementById('button1');
+            const btn2 = document.getElementById('button2');
+            const btn3 = document.getElementById('button3');
+
+            btn1.style.backgroundColor = '';
+            btn2.style.backgroundColor = '';
+            btn3.style.backgroundColor = '';
+
+            document.getElementById('rgb1').textContent = '';
+            document.getElementById('rgb2').textContent = '';
+            document.getElementById('rgb3').textContent = '';
+        }
+
+        const nameInput = document.getElementById('nameInput');
+        nameInput.addEventListener('input', () => {
+            if (nameInput.value.toUpperCase() === 'HACKERMAN') {
+                cheat();
             }
         });
+
+        function cheat() {
+            const winText = document.getElementById('winText');
+            const winClicks = document.getElementById('winClicks');
+            winClicks.textContent = totalClicks;
+            winText.textContent = `You win! You cheated and got the right combo instantly.`;
+
+            const clickCountText = document.getElementById('clickCountText');
+            clickCountText.textContent = `Previous attempt: ${totalClicks} clicks.`;
+
+            if (totalClicks < highScore) {
+                highScore = totalClicks;
+                const highScoreText = document.getElementById('highScoreText');
+                highScoreText.textContent = `Previous high score: ${highScore} clicks.`;
+
+                updateHighScoreList();
+            }
+
+            document.getElementById('winMessage').style.display = 'flex';
+        }
     </script>
 </body>
 </html>
