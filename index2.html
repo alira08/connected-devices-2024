@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Websocket Test</title>
+</head>
+<body>
+    
+    
+<script>
+    
+    const socket = new WebSocket("ws://localhost:1880/testpage")
+        socket.addEventListener("open", handleSocketOpen);
+
+        function handleSocketOpen(){
+            document.body.style.backgroundColor = "green";
+        }
+        function handleSocketClose(){
+            document.body.style.backgroundColor = "red";
+        }
+</script>
+
+</body>
+
+</html>
