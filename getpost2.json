@@ -1,0 +1,27 @@
+[
+    {
+        "id": "5a9597d5.5dc7fc",
+        "type": "http request",
+        "z": "46978cce2a0eabf7",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://dog.ceo/api/breeds/image/random",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 390,
+        "y": 100,
+        "wires": [
+            [
+                "ad3a61a2772e0ce8",
+                "2fc2953c.0e04b2"
+            ]
+        ]
+    }
+]
